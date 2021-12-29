@@ -1,6 +1,6 @@
 # quotify
 
-A new Flutter project.
+A sample project for demonstrating how to use bloc pattern library for API calling and unit testing using mockito.
 
 ## Getting Started
 
