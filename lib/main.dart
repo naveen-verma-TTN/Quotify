@@ -8,16 +8,20 @@ import 'package:quotify/repositories/quote_api_client.dart';
 import 'package:quotify/repositories/quote_repository.dart';
 
 void main() {
-  SimpleBlocDelegate();
-
   final QuoteRepository repository = QuoteRepository(
     quoteApiClient: QuoteApiClient(
       httpClient: http.Client(),
     ),
   );
-  runApp(MyApp(
-    repository: repository,
-  ));
+
+  BlocOverrides.runZoned(
+    () => runApp(
+      MyApp(
+        repository: repository,
+      ),
+    ),
+    blocObserver: SimpleBlocDelegate(),
+  );
 }
 
 class MyApp extends StatelessWidget {
