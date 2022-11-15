@@ -14,14 +14,8 @@ void main() {
     ),
   );
 
-  BlocOverrides.runZoned(
-    () => runApp(
-      MyApp(
-        repository: repository,
-      ),
-    ),
-    blocObserver: SimpleBlocDelegate(),
-  );
+  Bloc.observer = SimpleBlocDelegate(); // attaching observers to bloc
+  runApp(MyApp(repository: repository));
 }
 
 class MyApp extends StatelessWidget {
@@ -39,7 +33,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: HomeScreen(title: 'Quotify'),
+        home: const HomeScreen(title: 'Quotify'),
       ),
     );
   }

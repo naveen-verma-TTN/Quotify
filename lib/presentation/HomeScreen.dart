@@ -16,6 +16,13 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        actions: [
+          IconButton(
+            onPressed: () =>
+                context.read<QuoteEventBloc>().add(const FetchQuoteEvent()),
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
