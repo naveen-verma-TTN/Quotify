@@ -18,8 +18,9 @@ class HomeScreen extends StatelessWidget {
         title: Text(title),
         actions: [
           IconButton(
-            onPressed: () =>
-                context.read<QuoteEventBloc>().add(const FetchQuoteEvent()),
+            onPressed: () => context
+                .read<QuoteEventBloc>()
+                .add(const FetchRandomQuoteEvent()),
             icon: const Icon(Icons.refresh),
           ),
         ],
@@ -35,17 +36,17 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           BlocBuilder<QuoteEventBloc, QuoteEventState>(
+            buildWhen: (previousState, nextState) =>
+                nextState.randomQuote != null,
             builder: (_, state) {
-              if (state is QuoteEventEmpty) {
-                context.watch<QuoteEventBloc>().add(const FetchQuoteEvent());
-              }
-              if (state is QuoteEventLoaded) {
+              print('Build random Quotes');
+              if (state is RandomQuoteEventLoaded) {
                 var randomQuote = state.randomQuote;
                 return ListTile(
                   leading: const Icon(Icons.format_quote_outlined),
-                  title: Text(randomQuote.content.toString()),
+                  title: Text(randomQuote?.content.toString() ?? ''),
                   isThreeLine: true,
-                  subtitle: Text(randomQuote.author.toString()),
+                  subtitle: Text(randomQuote?.author.toString() ?? ''),
                   dense: true,
                 );
               }
@@ -60,13 +61,16 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           BlocBuilder<QuoteEventBloc, QuoteEventState>(
+            buildWhen: (previousState, nextState) =>
+                nextState.quoteList != null,
             builder: (context, state) {
+              print('Build random Quotes');
               if (state is QuoteEventLoaded) {
                 return Expanded(
                   child: ListView.separated(
-                    itemCount: state.quoteList.results?.length ?? 0,
+                    itemCount: state.quoteList?.results?.length ?? 0,
                     itemBuilder: (BuildContext context, int index) {
-                      var quote = state.quoteList.results?.elementAt(index);
+                      var quote = state.quoteList?.results?.elementAt(index);
                       if (quote != null) {
                         return ListTile(
                           leading: const Icon(Icons.format_quote_outlined),

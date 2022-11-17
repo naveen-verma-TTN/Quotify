@@ -6,24 +6,29 @@ import 'package:quotify/repositories/quote_repository.dart';
 part 'fetch_quote_event.dart';
 part 'quote_event_state.dart';
 
-class QuoteEventBloc extends Bloc<FetchQuoteEvent, QuoteEventState> {
+class QuoteEventBloc extends Bloc<QuoteEvent, QuoteEventState> {
   final QuoteRepository? repository;
 
   QuoteEventBloc({
     required this.repository,
   })  : assert(repository != null),
         super(QuoteEventEmpty()) {
-    on<FetchQuoteEvent>((event, emit) async {
-      emit(QuoteEventLoading());
+    on<QuoteEvent>((event, emit) async {
       try {
-        final Quote randomQuote = await getRandomQuote(event, emit);
-        final QuoteList quoteList = await getQuoteList(event, emit);
+        // for fetching QuoteList and RandomQuote
+        if (event is FetchQuoteEvent) {
+          emit(QuoteEventLoading());
+          final QuoteList quoteList = await getQuoteList(event, emit);
 
-        if (quoteList.count == 0 || randomQuote.length == 0) {
-          emit(QuoteEventEmpty());
-        } else {
-          emit(
-              QuoteEventLoaded(randomQuote: randomQuote, quoteList: quoteList));
+          if (quoteList.count == 0) {
+            emit(QuoteEventEmpty());
+          } else {
+            emit(QuoteEventLoaded(quoteList: quoteList));
+          }
+        } else if (event is FetchRandomQuoteEvent) {
+          // for fetching RandomQuote
+          final Quote randomQuote = await getRandomQuote(event, emit);
+          emit(RandomQuoteEventLoaded(randomQuote: randomQuote));
         }
       } catch (_) {
         print('exception $_');
@@ -32,11 +37,10 @@ class QuoteEventBloc extends Bloc<FetchQuoteEvent, QuoteEventState> {
     });
   }
 
-  Future getQuoteList(
-          FetchQuoteEvent event, Emitter<QuoteEventState> emit) async =>
+  Future getQuoteList(QuoteEvent event, Emitter<QuoteEventState> emit) async =>
       await repository?.fetchQuoteList();
 
   Future getRandomQuote(
-          FetchQuoteEvent event, Emitter<QuoteEventState> emit) async =>
+          QuoteEvent event, Emitter<QuoteEventState> emit) async =>
       await repository?.fetchRandomQuote();
 }

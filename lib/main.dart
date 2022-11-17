@@ -27,7 +27,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<QuoteEventBloc>(
-      create: (context) => QuoteEventBloc(repository: repository),
+      create: (context) => QuoteEventBloc(repository: repository)
+        ..add(const FetchQuoteEvent())
+        ..add(const FetchRandomQuoteEvent()),
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(

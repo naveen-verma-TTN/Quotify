@@ -10,3 +10,10 @@ class FetchQuoteEvent extends QuoteEvent {
   @override
   List<FetchQuoteEvent?> get props => [];
 }
+
+class FetchRandomQuoteEvent extends QuoteEvent {
+  const FetchRandomQuoteEvent();
+
+  @override
+  List<FetchQuoteEvent?> get props => [];
+}
